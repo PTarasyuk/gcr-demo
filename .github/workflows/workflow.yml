@@ -9,6 +9,8 @@ on:
 jobs:
   build-push-artifact:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v3"
@@ -34,16 +36,29 @@ jobs:
             if ! gcloud artifacts repositories describe ${{ vars.GCP_REPOSITORY }} --location=${{ vars.GCP_REGION }} --project=${{ vars.GCP_PROJECT_ID }}; then
               gcloud artifacts repositories create ${{ vars.GCP_REPOSITORY }} --location=${{ vars.GCP_REGION }} --repository-format=docker --project=${{ vars.GCP_PROJECT_ID }}
             fi
-      
+
+      - name: "Bump version and push tag"
+        id: create_tag
+        uses: anothrNick/github-tag-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DEFAULT_BUMP: patch
+
       - name: "Set GAR_LOCATION"
         run: |-
           echo "GAR_LOCATION=${{ vars.GCP_REGION }}-docker.pkg.dev/\
           ${{ vars.GCP_PROJECT_ID }}/\
           ${{ vars.GCP_REPOSITORY }}/\
-          ${{ vars.SERVICE_APP }}:${{ env.SHORT_SHA }}" >> $GITHUB_ENV
+          ${{ steps.create_tag.outputs.new_tag }}" >> $GITHUB_ENV
 
-      - name: "Push image"
+      - name: "Build and Push image"
         uses: docker/build-push-action@v2
         with:
+          context: .
           push: true
-          tags: ${{ env.GAR_LOCATION }}
+          tags: |
+            ${{ env.GAR_LOCATION }}:${{ env.SHORT_SHA }}
+            ${{ env.GAR_LOCATION }}:latest
+          build-args: |
+            VERSION=${{ steps.create_tag.outputs.new_tag }}

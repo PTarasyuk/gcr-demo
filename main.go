@@ -26,9 +26,9 @@ func main() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	name := os.Getenv("NAME")
-	if name == "" {
-		name = "World"
+	version := os.Getenv("VERSION")
+	if version == "" {
+		version = "v0.0.0"
 	}
-	fmt.Fprintf(w, "Hello %s!\n", name)
+	fmt.Fprintf(w, "Hello World! Version: %s\n", version)
 }
