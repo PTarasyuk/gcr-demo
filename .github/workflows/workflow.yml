@@ -38,9 +38,9 @@ jobs:
       - name: "Set GAR_LOCATION"
         run: |-
           echo "GAR_LOCATION=${{ vars.GCP_REGION }}-docker.pkg.dev/\
-                             ${{ vars.GCP_PROJECT_ID }}/\
-                             ${{ vars.GCP_REPOSITORY }}/\
-                             ${{ vars.SERVICE_APP }}:${{ env.SHORT_SHA }}" >> $GITHUB_ENV
+          ${{ vars.GCP_PROJECT_ID }}/\
+          ${{ vars.GCP_REPOSITORY }}/\
+          ${{ vars.SERVICE_APP }}:${{ env.SHORT_SHA }}" >> $GITHUB_ENV
 
       - name: "Push image"
         uses: docker/build-push-action@v2
