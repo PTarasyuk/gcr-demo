@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: ["main"]
 
-env:
-  GAR_LOCATION: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.SERVICE_APP }}:${{ github.sha }}
-
 jobs:
   build-push-artifact:
     runs-on: ubuntu-latest
@@ -16,7 +13,10 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v3"
 
-      - id: "auth"
+      - name: "Get short SHA"
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: "Authenticate with Google Cloud"
         uses: "google-github-actions/auth@v1"
         with:
           project_id: "${{ vars.GCP_PROJECT_ID }}"
@@ -28,12 +28,19 @@ jobs:
       - name: "Use gcloud CLI"
         run: "gcloud info"
 
-      - name: "Docker auth"
+      - name: "Configure Docker"
         run: |-
             gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
+            if ! gcloud artifacts repositories describe ${{ vars.GCP_REPOSITORY }} --location=${{ vars.GCP_REGION }} --project=${{ vars.GCP_PROJECT_ID }}; then
+              gcloud artifacts repositories create ${{ vars.GCP_REPOSITORY }} --location=${{ vars.GCP_REGION }} --repository-format=docker --project=${{ vars.GCP_PROJECT_ID }}
+            fi
       
-      - name: "Build image"
-        run: docker build -t ${{ env.GAR_LOCATION }} .
+      - name: "Set GAR_LOCATION"
+        run: |-
+          echo "GAR_LOCATION=${{ vars.GCP_REGION }}-docker.pkg.dev/\
+                             ${{ vars.GCP_PROJECT_ID }}/\
+                             ${{ vars.GCP_REPOSITORY }}/\
+                             ${{ vars.SERVICE_APP }}:${{ env.SHORT_SHA }}" >> $GITHUB_ENV
 
       - name: "Push image"
         uses: docker/build-push-action@v2
