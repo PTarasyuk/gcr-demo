@@ -36,4 +36,7 @@ jobs:
         run: docker build -t ${{ env.GAR_LOCATION }} .
 
       - name: "Push image"
-        run: docker push ${{ env.GAR_LOCATION }}
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ env.GAR_LOCATION }}
