@@ -7,11 +7,11 @@ terraform {
 
 provider "google" {
   project = var.project
-  region = var.region
+  region  = var.region
 }
 
 resource "google_cloud_run_service" "this" {
-  name = "helloworld-app"
+  name     = "helloworld-app"
   location = var.region
   template {
     spec {
@@ -25,7 +25,7 @@ resource "google_cloud_run_service" "this" {
   }
 
   traffic {
-    percent = 100
+    percent         = 100
     latest_revision = true
   }
 }
