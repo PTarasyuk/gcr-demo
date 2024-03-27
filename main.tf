@@ -19,9 +19,6 @@ resource "google_cloud_run_service" "this" {
         image = "${var.region}-docker.pkg.dev/${var.project}/${var.repository}/${var.app_version}:latest"
       }
     }
-    metadata {
-      name = "helloworld-app-${var.app_version}"
-    }
   }
 
   traffic {
