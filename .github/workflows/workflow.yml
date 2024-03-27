@@ -1,9 +1,7 @@
-name: Build and Push to Artifact Registry
+name: Build and Push to GAR
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
     branches: ["main"]
 
 jobs:
@@ -28,7 +26,7 @@ jobs:
         uses: "google-github-actions/setup-gcloud@v1"
 
       - name: "Use gcloud CLI"
-        run: "gcloud info"
+        run: "gclod info"
 
       - name: "Configure Docker"
         run: |-

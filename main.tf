@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
-    bucket = "terraform-state-helloworld"
-    prefix = "prod"
+    bucket = "helloworld-418410-terraform"
+    prefix = "helloworld"
   }
 }
 
