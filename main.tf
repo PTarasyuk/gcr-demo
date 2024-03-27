@@ -10,14 +10,22 @@ provider "google" {
   region = var.region
 }
 
-resource "google_cloud_run_service" "helloworld_app" {
+resource "google_cloud_run_service" "this" {
   name = "helloworld-app"
   location = var.region
   template {
     spec {
       containers {
-        image = "gcr.io/helloworld-418410/helloworld"
+        image = "${var.region}-docker.pkg.dev/${var.project}/${var.repository}/${var.version}:latest"
       }
     }
+    metadata {
+      name = "helloworld-app-${var.version}"
+    }
+  }
+
+  traffic {
+    percent = 100
+    latest_revision = true
   }
 }

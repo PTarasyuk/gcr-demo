@@ -1,9 +1,3 @@
-locals {
-  labels = {
-    "data_project" = var.data_project
-  }
-}
-
 variable "project" {
   description = "ID Google Cloud project"
   type = string
@@ -14,7 +8,12 @@ variable "region" {
   type = string
 }
 
-variable "data_project" {
-  description = "Name of data pipeline project to use as a resource prefix"
+variable "repository" {
+  description = "Repository for Google Cloud project"
+  type = string
+}
+
+variable "version" {
+  description = "Version service / app for Google Cloud project"
   type = string
 }

@@ -26,7 +26,7 @@ jobs:
         uses: "google-github-actions/setup-gcloud@v1"
 
       - name: "Use gcloud CLI"
-        run: "gclod info"
+        run: "gcloud info"
 
       - name: "Configure Docker"
         run: |-
