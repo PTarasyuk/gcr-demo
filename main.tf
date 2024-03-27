@@ -19,7 +19,7 @@ resource "google_cloud_run_service" "this" {
         image = "${var.region}-docker.pkg.dev/${var.project}/${var.repository}/${var.app_version}:latest"
         resources {
           limits = {
-            cpu    = "0.25"
+            cpu    = "0.5"
             memory = "128Mi"
           }
         }
