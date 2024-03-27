@@ -13,7 +13,7 @@ variable "repository" {
   type        = string
 }
 
-variable "version" {
-  description = "Version service / app for Google Cloud project"
+variable "app_version" {
+  description = "Version app for Google Cloud project"
   type        = string
 }
