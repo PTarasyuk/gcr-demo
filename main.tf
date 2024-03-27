@@ -26,3 +26,10 @@ resource "google_cloud_run_service" "this" {
     latest_revision = true
   }
 }
+
+resource "google_cloud_run_service_iam_member" "public" {
+  service  = google_cloud_run_service.this.name
+  location = google_cloud_run_service.this.location
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}
